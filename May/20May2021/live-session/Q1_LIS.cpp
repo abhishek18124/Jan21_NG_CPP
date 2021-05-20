@@ -21,8 +21,62 @@ Example 2:
 
 using namespace std;
 
-int lengthOfLIS(vector<int>& nums) {
+int LIS2D(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n+1, -1));
+        
+        // base case
+        for(int i=0; i<n; i++) {
+            dp[i][n] = 0;
+        }
+        
+        // recursive case
+        for(int j=n-1; j>=1; j--) {
+            for(int i=0; i<j; i++) {
+                int skip = dp[i][j+1];
+                int take = 1 + dp[j][j+1];
+                if(nums[i] >= nums[j]) {
+                    // exclude nums[j]
+                    dp[i][j] = skip;
+                } else {
+                    // you have an option to include or exclude nums[j]
+                    dp[i][j] = max(skip, take);
+                }
+            }
+        }    
+        return dp[0][1]; 
+    }
 
+
+int LIS1D(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        
+        // base case
+        dp[n-1] = 1;
+        
+        int max_length=1;
+        
+        // recursive case
+        for(int j=n-2; j>=0; j--) {
+            int best = 0;
+            for(int i=j+1; i<n; i++) {
+                if(nums[i] > nums[j])
+                    best = max(best, dp[i]);
+            }
+            dp[j] = 1 + best;
+            max_length = max(max_length, dp[j]);
+        }
+        
+        return max_length;
+        
+    }
+    
+int lengthOfLIS(vector<int>& nums) {
+    // nums.insert(nums.begin(), INT_MIN);
+    // return LIS2D(nums);
+
+    return LIS1D(nums);
 }
 
 int main() {
