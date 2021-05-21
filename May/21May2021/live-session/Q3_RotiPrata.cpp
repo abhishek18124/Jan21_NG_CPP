@@ -22,11 +22,76 @@ Print an integer which tells the number of minutes needed to get the order done.
 */
 
 #include<iostream>
+#include<climits>
 
 using namespace std;
 
+int numPratasByACook(int rank, int timeLimit) {
+	int cnt=0;
+	int i=1;
+	int time=0;
+	while(time <= timeLimit) {
+		time += i*rank;
+		if(time>timeLimit)
+			break;
+		cnt++;
+		i++;
+	}
+	return cnt;
+}
+
+int numPrataCooked(int L, int* ranks, int timeLimit) {
+	int numPratas=0;
+	for(int i=0; i<L; i++) {
+		numPratas += numPratasByACook(ranks[i], timeLimit);
+	}
+	return numPratas;
+}
+
+int minTimeToGetOrder(int P, int L, int* ranks) {
+	// note : when you don't use the tightest lower & upper bounds
+	// you will make more comparisions during binary search.
+
+	// so, always try to find the tightest bounds, if not possible
+	// go with general valid bounds.
+
+	int s = 0; // time cannot be less than 0
+	int e = INT_MAX; 
+	int ans;
+
+	while(s <= e) {
+		int m = s + (e-s)/2;
+		// Can L cooks complete the order of P pratas in 'm' amount of time 
+		if(numPrataCooked(L, ranks, m) >= P) {
+			ans = m;
+			e = m - 1;
+		} else {
+			s = m + 1;
+		}
+	}
+
+	return ans;
+}
+
 int main() {
 
+	int t;
+	cin >> t;
+
+	int P;
+	int L;
+		
+	while(t--) {
+		cin >> P;
+
+		cin >> L;
+
+		int* ranks = new int[L];
+		for(int i=0; i<L; i++) 
+			cin >> ranks[i];
+
+		cout << minTimeToGetOrder(P, L, ranks) << endl;
+	}
 
 	return 0;
 }
