@@ -46,8 +46,11 @@ int main() {
 
 	string expr("(a   +   b * (c - d  ) ) ");
 	cout << expr << endl;
+	
+	// removes whitespaces
 	expr.erase(remove(expr.begin(), expr.end(), ' '), expr.end());
 	cout << expr << endl;
+	
 	isRedundant(expr) ? cout << "Yes" << endl : cout << "No" << endl;
 	return 0;
 }
